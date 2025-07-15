@@ -25,6 +25,21 @@ public class CollisionChecker
 
     }
 
+    public static bool bRectCollsionCheck(GameObject pObj, GameObject pColliedObj)
+    {
+
+        MYRECT rc1 = Update_GameObject(pObj);
+        MYRECT rc2 = Update_GameObject(pColliedObj);
+
+        if (rc1.left < rc2.right &&
+            rc1.right > rc2.left &&
+            rc1.top > rc2.bottom &&
+            rc1.bottom < rc2.top)
+            return true;
+        else
+            return false;
+    }
+
     public static bool RectCollsionAndPush(GameObject pObj, GameObject pColliedObj)
     {
 
@@ -46,9 +61,6 @@ public class CollisionChecker
 
     public static void PushDestObjPosition(GameObject rDestObj, GameObject pBox)
     {
-        //MYRECT rc1 = rDestObj.m_tRect;
-        //MYRECT rc2 = pBox.m_tRect;
-
         MYRECT rc1 = Update_GameObject(rDestObj);
         MYRECT rc2 = Update_GameObject(pBox);
 
@@ -102,16 +114,26 @@ public class CollisionChecker
 
         rDestObj.transform.position = rDestObjPosition;
 
-
-
     }
-
-
 
     public static MYRECT Update_GameObject(GameObject _obj)
     {
+        Unit _objunit = _obj.GetComponent<Unit>();
+
+        var m_vSize = Vector3.zero;
+        if (_objunit.Width == 0)
+        {
+            m_vSize = _obj.transform.localScale;
+
+        }
+        else
+        {
+            m_vSize.x = _objunit.Width / 100;
+            m_vSize.y = _objunit.Height / 100;
+        }
+
         var m_vPos = _obj.transform.position;
-        var m_vSize = _obj.transform.localScale;
+
 
         m_tRect.left = m_vPos.x - m_vSize.x * 0.5f;
         m_tRect.right = m_vPos.x + m_vSize.x * 0.5f;

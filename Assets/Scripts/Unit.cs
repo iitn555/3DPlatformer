@@ -16,10 +16,15 @@ public struct MYRECT
 };
 
 
+
 public class Unit : MonoBehaviour
 {
+    public float Width { get; protected set; }
+    public float Height { get; protected set; }
 
-    
+    //protected float Width = 0;
+    //protected float Height = 0;
+
     // Start is called before the first frame update
     void Start()
     {

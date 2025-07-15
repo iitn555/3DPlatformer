@@ -15,4 +15,13 @@ public class MainGame : MonoBehaviour
     {
         Managers.Camera_Instance.CameraUpdate();
     }
+
+    private void LateUpdate()
+    {
+       
+
+
+
+        
+    }
 }

@@ -5,6 +5,45 @@ public class CollisionChecker
 
     private static MYRECT m_tRect = new MYRECT();
 
+    
+
+    public static bool LineCollsion(GameObject pObjFootLine, GameObject pBoxHeadLine)
+    {
+
+        MYRECT rc1 = Update_GameObject(pObjFootLine);
+        MYRECT rc2 = Update_GameObject(pBoxHeadLine);
+
+        if (rc1.left < rc2.right &&
+        rc1.right > rc2.left &&
+        rc1.FootTop >= rc2.HeadBot &&
+        rc1.bottom <= rc2.top)
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public static bool RectCollsionAndPush(GameObject pObj, GameObject pColliedObj)
+    {
+
+        MYRECT rc1 = Update_GameObject(pObj);
+        MYRECT rc2 = Update_GameObject(pColliedObj);
+
+        if (rc1.left < rc2.right &&
+            rc1.right > rc2.left &&
+            rc1.top > rc2.bottom &&
+            rc1.bottom < rc2.top)
+        {
+            PushDestObjPosition(pObj, pColliedObj);
+            return true;
+
+        }
+
+        return false;
+    }
+
     public static void PushDestObjPosition(GameObject rDestObj, GameObject pBox)
     {
         //MYRECT rc1 = rDestObj.m_tRect;
@@ -64,8 +103,9 @@ public class CollisionChecker
         rDestObj.transform.position = rDestObjPosition;
 
 
-        
+
     }
+
 
 
     public static MYRECT Update_GameObject(GameObject _obj)

@@ -4,37 +4,40 @@ using UnityEngine;
 using System;
 public class PoolManager
 {
-    Vector3 RespawnPosition = new Vector3(5f, -2.9f);
-    //public GameObject ZombieMeleeSample;
-    //public GameObject BulletSample;
-    private Transform ZombieMelee_Root;
-    private Transform Bullet_Root;
-    private Transform Box_Root;
-
-    //private Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>(); // ALLSAMPLE
     public Dictionary<string, List<Unit>> Dictionary_AllGameObject = new Dictionary<string, List<Unit>>();
 
     Transform _root;
 
-    private GameObject[] AllBox = new GameObject[5];
-    private GameObject LastPlayer;
-
+    Transform MainGame_tf;
 
     public void Init()
     {
-        if (_root == null)
+        if (_root == null) //최초 한번만 실행
         {
             _root = new GameObject { name = "@Pool_Root" }.transform;
             _root.transform.SetParent(GameObject.Find("@Managers").transform);
 
+
+
+            Setting();
+
         }
 
-        Setting();
     }
 
     void Setting() // 필수오브젝트 생성
     {
         CreatePlayer();
+
+        MainGame_tf = GameObject.Find("MainGame").transform;
+        Transform blocks_tf = MainGame_tf.Find("Blocks");
+
+        for (int i = 0; i < blocks_tf.childCount; ++i)
+        {
+            var _component = blocks_tf.GetChild(i).gameObject.AddComponent<Unit>();
+            RegisterUnit<Unit>(_component, "Block");
+
+        }
 
     }
     public void CreatePlayer()
@@ -43,7 +46,9 @@ public class PoolManager
         var _playercomponent = GameObject.Find("Player").AddComponent<PlayerController>();
         //현재는 Player 오브젝트에 붙는다 나중에 프리팹으로 바꿀 생각
 
-        RegisterUnit<PlayerController>(_playercomponent, typeof(PlayerController).Name);
+        RegisterUnit<PlayerController>(_playercomponent, "Player");
+
+        //RegisterUnit<PlayerController>(_playercomponent, typeof(PlayerController).Name);
 
 
     }

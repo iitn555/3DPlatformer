@@ -47,19 +47,22 @@ public class MainGame : MonoBehaviour
         string json = File.ReadAllText(savePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
+        int count = 0;
         foreach (PositionData posData in data.objects)
         {
-            MakeCube(posData.position);
+            MakeCube(ref count, posData.position);
         }
 
         Debug.Log("Load complete.");
     }
 
-    void MakeCube(Vector3 _pos = default)
+    void MakeCube(ref int _count, Vector3 _pos = default)
     {
         GameObject obj = Instantiate(SampleCubeObject, CubeBoxTransform);
         obj.SetActive(true);
         obj.transform.position = _pos;
+        obj.name = $"Cube_{_count}";
+        _count++;
     }
 
 }

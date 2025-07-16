@@ -29,6 +29,8 @@ public class PlayerController : Unit
 
     private Player_State NowState = Player_State.Idle;
 
+    public Material Default;
+    public Material Red;
 
     public TextMeshProUGUI debugText;
     public TextMeshProUGUI debugText2;
@@ -40,18 +42,26 @@ public class PlayerController : Unit
     {
         Width = 100.1f;
         Height = 146.3f;
+
+        
     }
     void Start()
     {
         debugText = GameObject.Find("debugText").GetComponent<TextMeshProUGUI>();
         debugText2 = GameObject.Find("debugText2").GetComponent<TextMeshProUGUI>();
+
+        { // test
+            var tf = GameObject.Find("Blocks").transform;
+            Default = tf.GetChild(0).GetComponent<MeshRenderer>().material;
+            Red = tf.GetChild(1).GetComponent<MeshRenderer>().material;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         MyPos = transform.position;
-        
+
         PlayerMoveControll();
         PlayerJumpControll();
 
@@ -71,15 +81,15 @@ public class PlayerController : Unit
         PlayerCollisionCheck();
 
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            debugText.gameObject.SetActive(!debugText.gameObject.activeSelf);
-            debugText2.gameObject.SetActive(!debugText2.gameObject.activeSelf);
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    debugText.gameObject.SetActive(!debugText.gameObject.activeSelf);
+        //    debugText2.gameObject.SetActive(!debugText2.gameObject.activeSelf);
+        //}
 
-        debugText.text = $"m_fVerticalSpeed: {m_fVerticalSpeed}";
+        //debugText.text = $"m_fVerticalSpeed: {m_fVerticalSpeed}";
 
-        
+
     }
 
 
@@ -212,52 +222,85 @@ public class PlayerController : Unit
 
     enum CollisionDirection { None, Top, Bottom, Left, Right }
 
+    GameObject LastBlock = null;
+
     void PlayerCollisionCheck()
     {
-        CollisionDirection colDir = CollisionDirection.None;
-        GameObject collidedBlock = null;
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            int test = 0;
+        }
+
+
+        CollisionDirection finalDir = CollisionDirection.None;
+        GameObject finalBlock = null;
 
         if (Managers.Pool_Instance.Dictionary_AllGameObject.ContainsKey("Block"))
         {
             foreach (var box in Managers.Pool_Instance.Dictionary_AllGameObject["Block"])
             {
+                if (!box.gameObject.activeSelf)
+                    continue;
 
-                colDir = GetCollisionDirection(gameObject, box.gameObject);
-
-                if (colDir != CollisionDirection.None)
+                var dir = GetCollisionDirection(gameObject, box.gameObject);
+                if (dir == CollisionDirection.Top)
                 {
-                    collidedBlock = box.gameObject;
-                    break;
+                    finalDir = dir;
+                    finalBlock = box.gameObject;
+                    break; // Top이 최우선
                 }
-
-
+                else if (dir == CollisionDirection.Bottom && finalDir != CollisionDirection.Top)
+                {
+                    finalDir = dir;
+                    finalBlock = box.gameObject;
+                }
+                else if ((dir == CollisionDirection.Left || dir == CollisionDirection.Right) && finalDir == CollisionDirection.None)
+                {
+                    finalDir = dir;
+                    finalBlock = box.gameObject;
+                }
             }
         }
 
-        
-        if (colDir == CollisionDirection.Left || colDir == CollisionDirection.Right)
+        if (finalBlock != null)
         {
-            // 측면 충돌: x/z 위치만 보정, 점프 상태 유지
-            debugText2.text = "측면 충돌";
+
+            if (LastBlock != finalBlock)
+            {
+                if (LastBlock != null)
+                    LastBlock.GetComponent<MeshRenderer>().material = Default;
+
+                LastBlock = finalBlock;
+            }
+
+            debugText.text = finalBlock.name;
+            finalBlock.GetComponent<MeshRenderer>().material = Red;
         }
-        else if (colDir == CollisionDirection.Bottom)
-        {
-            // 플레이어가 블록 아래에 부딪힘(천장)
-            m_fVerticalSpeed = 0;
-            debugText2.text = "천장 충돌";
-        }
-        else if (colDir == CollisionDirection.Top && collidedBlock != null)
+
+        // 이후 finalDir에 따라 처리
+        if (finalDir == CollisionDirection.Top && finalBlock != null)
         {
             // 블록 위에 착지
-            var blockRect = CollisionChecker.Update_GameObject(collidedBlock);
+            var blockRect = CollisionChecker.Update_GameObject(finalBlock);
             MyPos.y = blockRect.top;
             m_fVerticalSpeed = 0;
             SetMyState(Player_State.Idle);
             debugText2.text = "착지(블록 위)";
         }
+        else if (finalDir == CollisionDirection.Bottom)
+        {
+            // 플레이어가 블록 아래에 부딪힘(천장)
+            m_fVerticalSpeed = 0;
+            debugText2.text = "천장 충돌";
+        }
+        else if (finalDir == CollisionDirection.Left || finalDir == CollisionDirection.Right)
+        {
+            // 측면 충돌: x/z 위치만 보정, 점프 상태 유지
+            debugText2.text = "측면 충돌";
+        }
         else
         {
-            //debugText2.text = "충돌XX";
             SetMyState(Player_State.Falling);
         }
     }

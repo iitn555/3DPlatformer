@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Define
 {
@@ -60,4 +61,17 @@ public class Define
     //{
     //    QuarterView,
     //}
+}
+
+[System.Serializable] // 직렬화 안하면 JSON 파일이 정상적으로 만들어지지 않음.
+public class PositionData
+{
+    public string name;
+    public Vector3 position;
+}
+
+
+public class SaveData
+{
+    public List<PositionData> objects = new List<PositionData>();
 }

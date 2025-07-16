@@ -55,6 +55,12 @@ public class PlayerController : Unit
         PlayerMoveControll();
         PlayerJumpControll();
 
+        if (MyPos.y < -5)
+        {
+            MyPos.y = 10;
+            //ExitGame();// 테스트용 게임 종료
+        }
+
         transform.position = MyPos;
 
 
@@ -73,8 +79,7 @@ public class PlayerController : Unit
 
         debugText.text = $"m_fVerticalSpeed: {m_fVerticalSpeed}";
 
-        if (MyPos.y < -5) // 테스트용 게임 종료
-            ExitGame();
+        
     }
 
 
@@ -229,16 +234,8 @@ public class PlayerController : Unit
             }
         }
 
-        if (colDir == CollisionDirection.Top && collidedBlock != null)
-        {
-            // 블록 위에 착지
-            var blockRect = CollisionChecker.Update_GameObject(collidedBlock);
-            MyPos.y = blockRect.top;
-            m_fVerticalSpeed = 0;
-            SetMyState(Player_State.Idle);
-            debugText2.text = "착지(블록 위)";
-        }
-        else if (colDir == CollisionDirection.Left || colDir == CollisionDirection.Right)
+        
+        if (colDir == CollisionDirection.Left || colDir == CollisionDirection.Right)
         {
             // 측면 충돌: x/z 위치만 보정, 점프 상태 유지
             debugText2.text = "측면 충돌";
@@ -248,6 +245,15 @@ public class PlayerController : Unit
             // 플레이어가 블록 아래에 부딪힘(천장)
             m_fVerticalSpeed = 0;
             debugText2.text = "천장 충돌";
+        }
+        else if (colDir == CollisionDirection.Top && collidedBlock != null)
+        {
+            // 블록 위에 착지
+            var blockRect = CollisionChecker.Update_GameObject(collidedBlock);
+            MyPos.y = blockRect.top;
+            m_fVerticalSpeed = 0;
+            SetMyState(Player_State.Idle);
+            debugText2.text = "착지(블록 위)";
         }
         else
         {

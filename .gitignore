@@ -70,5 +70,10 @@ crashlytics-build.properties
 InitTestScene*.unity.meta
 InitTestScene*.unity
 
+# 250806 Unity6 ignore
+
+/[Pp]ackages/com.unity.inputsystem/InputSystem/
+/[Ll]ibrary/ShaderCache/
+/[Ll]ibrary/com.unity.addressables/
 
 # End of https://www.toptal.com/developers/gitignore/api/unity

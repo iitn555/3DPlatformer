@@ -17,7 +17,7 @@ public class MainGame : MonoBehaviour
 
     void Update()
     {
-        Managers.Camera_Instance.CameraUpdate();
+        Managers.Camera_Instance.CameraUpdate(); // Managers 최초 실행
     }
 
     private void LateUpdate()

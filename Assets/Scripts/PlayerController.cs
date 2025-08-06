@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : Unit
 {
@@ -43,7 +44,7 @@ public class PlayerController : Unit
         Width = 100.1f;
         Height = 146.3f;
 
-        
+
     }
     void Start()
     {
@@ -133,21 +134,21 @@ public class PlayerController : Unit
     {
         Define.Camera_State NowCameraState = Managers.Camera_Instance.Get_Camera_State;
 
-        if (Input.GetKey(KeyCode.UpArrow))
+        //if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+        //{
+        //    MyPos.y += Time.deltaTime * fMaxSpeed;
+        //}
+
+        //if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+        //{
+        //    MyPos.y -= Time.deltaTime * fMaxSpeed;
+        //}
+
+
+
+        if (Keyboard.current.leftArrowKey.isPressed)
         {
-            MyPos.y += Time.deltaTime * fMaxSpeed;
-        }
-
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            MyPos.y -= Time.deltaTime * fMaxSpeed;
-        }
-
-
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            if (Input.GetKey(KeyCode.X))
+            if (Keyboard.current.xKey.isPressed)
             {
                 if (fLeftSpeed < fMaxSpeed)
                     fLeftSpeed += Time.deltaTime * 40;
@@ -175,9 +176,9 @@ public class PlayerController : Unit
                 fLeftSpeed = fMinSpeed;
         }
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Keyboard.current.rightArrowKey.isPressed)
         {
-            if (Input.GetKey(KeyCode.X))
+            if (Keyboard.current.xKey.isPressed)
             {
                 if (fRightSpeed < fMaxSpeed)
                     fRightSpeed += Time.deltaTime * 40;
@@ -205,13 +206,13 @@ public class PlayerController : Unit
                 fRightSpeed = fMinSpeed;
         }
 
-        if (Input.GetKey(KeyCode.C))
+        if (Keyboard.current.cKey.isPressed)
         {
             if (!GetMyState(Player_State.Falling))
                 Jump();
         }
 
-        if (Input.GetKey(KeyCode.P))
+        if (Keyboard.current.pKey.isPressed)
         {
             MyPos.y -= m_fGravity * Time.deltaTime * 0.5f;
         }
@@ -227,10 +228,7 @@ public class PlayerController : Unit
     void PlayerCollisionCheck()
     {
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            int test = 0;
-        }
+
 
 
         CollisionDirection finalDir = CollisionDirection.None;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraManager
 {
@@ -41,12 +42,12 @@ public class CameraManager
     public void CameraUpdate()
     {
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             Main_Camera.orthographic = !Main_Camera.orthographic;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (NowRotateState == Camera_RotateState.Idle)
             {
@@ -59,7 +60,7 @@ public class CameraManager
 
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Keyboard.current.rKey.wasPressedThisFrame)
         {
             if (NowRotateState == Camera_RotateState.Idle)
             {

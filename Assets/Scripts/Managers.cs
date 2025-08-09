@@ -39,7 +39,7 @@ public class Managers : MonoBehaviour
 
             s_instance = _obj.GetComponent<Managers>();
             _obj.transform.SetParent(GameObject.Find("MainGame").transform);
-            Debug.Log("@Manager Init!");
+            Debug.Log("@Managers Init!");
 
             s_instance._camera.Init();
             s_instance._pool.Init();

@@ -20,6 +20,7 @@ public class PoolManager
 
 
             Setting();
+            Debug.Log("PoolManager Init!");
 
         }
 
@@ -47,7 +48,6 @@ public class PoolManager
         //현재는 Player 오브젝트에 붙는다 나중에 프리팹으로 바꿀 생각
 
         RegisterUnit<PlayerController>(_playercomponent, "Player");
-
         //RegisterUnit<PlayerController>(_playercomponent, typeof(PlayerController).Name);
 
 

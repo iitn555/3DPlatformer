@@ -25,20 +25,85 @@ public class CollisionChecker
 
     }
 
-    public static bool bRectCollsionCheck(GameObject pObj, GameObject pColliedObj)
+    //public static bool IsRectCollsionX(GameObject pObj, GameObject pColliedObj)
+    //{
+
+    //    MYRECT rc1 = Update_GameObject(pObj);
+    //    MYRECT rc2 = Update_GameObject(pColliedObj);
+
+    //    if (rc1.left < rc2.right &&
+    //        rc1.right > rc2.left &&
+    //        rc1.top > rc2.bottom &&
+    //        rc1.bottom < rc2.top)
+    //        return true;
+    //    else
+    //        return false;
+    //}
+
+    //public static bool IsRectCollsionZ(GameObject pObj, GameObject pColliedObj)
+    //{
+
+    //    MYRECT rc1 = Update_GameObject(pObj);
+    //    MYRECT rc2 = Update_GameObject(pColliedObj);
+
+    //    if (rc1.back < rc2.front &&
+    //        rc1.front > rc2.back &&
+    //        rc1.top > rc2.bottom &&
+    //        rc1.bottom < rc2.top)
+    //        return true;
+    //    else
+    //        return false;
+    //}
+
+
+
+    public static bool IsRectCollsionAndPush(GameObject pObj, GameObject pColliedObj)
     {
+        var now_camera_state = Managers.Camera_Instance.Get_Camera_State;
+        if (now_camera_state == Define.Camera_State.R_0 || now_camera_state == Define.Camera_State.R_180) // X
+        {
+            MYRECT rc1 = Update_GameObject(pObj);
+            MYRECT rc2 = Update_GameObject(pColliedObj);
 
-        MYRECT rc1 = Update_GameObject(pObj);
-        MYRECT rc2 = Update_GameObject(pColliedObj);
+            if (rc1.left < rc2.right &&
+                rc1.right > rc2.left &&
+                rc1.top > rc2.bottom &&
+                rc1.bottom < rc2.top)
+            {
+                PushDestObjPositionX(pObj, pColliedObj);
 
-        if (rc1.left < rc2.right &&
-            rc1.right > rc2.left &&
-            rc1.top > rc2.bottom &&
-            rc1.bottom < rc2.top)
-            return true;
-        else
-            return false;
+                return true;
+            }
+            else
+                return false;
+        }
+        else if (now_camera_state == Define.Camera_State.R_90 || now_camera_state == Define.Camera_State.R_270) // Z
+        {
+            MYRECT rc1 = Update_GameObject(pObj);
+            MYRECT rc2 = Update_GameObject(pColliedObj);
+
+            if (rc1.back < rc2.front &&
+                rc1.front > rc2.back &&
+                rc1.top > rc2.bottom &&
+                rc1.bottom < rc2.top)
+            {
+                PushDestObjPositionZ(pObj, pColliedObj);
+
+                return true;
+            }
+            else
+                return false;
+        }
+
+
+                return false;
+
     }
+
+
+
+
+
 
     public static bool RectCollsionAndPush(GameObject pObj, GameObject pColliedObj)
     {
@@ -51,7 +116,7 @@ public class CollisionChecker
             rc1.top > rc2.bottom &&
             rc1.bottom < rc2.top)
         {
-            PushDestObjPosition(pObj, pColliedObj);
+            PushDestObjPositionX(pObj, pColliedObj);
             return true;
 
         }
@@ -59,7 +124,7 @@ public class CollisionChecker
         return false;
     }
 
-    public static void PushDestObjPosition(GameObject rDestObj, GameObject pBox)
+    public static void PushDestObjPositionX(GameObject rDestObj, GameObject pBox)
     {
         MYRECT rc1 = Update_GameObject(rDestObj);
         MYRECT rc2 = Update_GameObject(pBox);
@@ -116,6 +181,62 @@ public class CollisionChecker
 
     }
 
+    public static void PushDestObjPositionZ(GameObject rDestObj, GameObject pBox)
+    {
+        MYRECT rc1 = Update_GameObject(rDestObj);
+        MYRECT rc2 = Update_GameObject(pBox);
+
+        var rDestObjPosition = rDestObj.transform.position;
+        var pBoxPosition = pBox.transform.position;
+
+        if (rDestObjPosition.z < pBoxPosition.z) // rDestObj 가 왼쪽
+        {
+            if (rDestObjPosition.y < pBoxPosition.y) // rDestObj가 위쪽
+            {
+                float A = rc1.front - rc2.back;
+                float B = rc1.top - rc2.bottom;
+                if (A < B) // 겹친 면적을 비교해서 어디서 부딪혔는지 추정
+                    rDestObjPosition.z -= A;
+                else
+                    rDestObjPosition.y -= B;
+            }
+            else //rDestObj가 아래쪽
+            {
+                float A = rc1.front - rc2.back;
+                float B = rc2.top - rc1.bottom;
+                if (A < B)
+                    rDestObjPosition.z -= A;
+                else
+                    rDestObjPosition.y += B;
+            }
+        }
+        else
+        {
+            if (rDestObjPosition.y < pBoxPosition.y)
+            {
+                float A = rc2.front - rc1.back;
+                float B = Mathf.Abs(rc2.bottom - rc1.top);
+                if (A < B)
+                    rDestObjPosition.z += A;
+                else
+                    rDestObjPosition.y -= B;
+            }
+            else
+            {
+                float A = rc2.front - rc1.back;
+                float B = rc2.top - rc1.bottom;
+                if (A < B)
+                    rDestObjPosition.z += A;
+                else
+                    rDestObjPosition.y += B;
+            }
+        }
+
+
+        rDestObj.transform.position = rDestObjPosition;
+
+    }
+
     public static MYRECT Update_GameObject(GameObject _obj)
     {
         Unit _objunit = _obj.GetComponent<Unit>();
@@ -128,7 +249,7 @@ public class CollisionChecker
         }
         else
         {
-            m_vSize.x = _objunit.Width / 100;
+            m_vSize.z = m_vSize.x = _objunit.Width / 100;
             m_vSize.y = _objunit.Height / 100;
         }
 

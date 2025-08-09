@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // 날짜 : 2021-02-28 PM 5:30:50
 // 작성자 : Rito
@@ -22,17 +23,23 @@ namespace Rito
         public float _rotationSpeed = 5f;
         public bool _wheelAcceleration = false; // 마우스 휠로 이동속도 증가/감소
 
-        [Space]
-        public KeyCode _moveForward = KeyCode.W;
-        public KeyCode _moveBackward = KeyCode.S;
-        public KeyCode _moveLeft = KeyCode.A;
-        public KeyCode _moveRight = KeyCode.D;
-        public KeyCode _moveUp = KeyCode.E;
-        public KeyCode _moveDown = KeyCode.Q;
+        //[Space]
+        //public KeyCode _moveForward = KeyCode.W;
+        //public KeyCode _moveBackward = KeyCode.S;
+        //public KeyCode _moveLeft = KeyCode.A;
+        //public KeyCode _moveRight = KeyCode.D;
+        //public KeyCode _moveUp = KeyCode.E;
+        //public KeyCode _moveDown = KeyCode.Q;
 
-        [Space]
-        public KeyCode _run = KeyCode.LeftShift;
-        public KeyCode _cursorLock = KeyCode.LeftAlt;
+        //[Space]
+        //public KeyCode _run = KeyCode.LeftShift;
+        //public KeyCode _cursorLock = KeyCode.LeftAlt;
+
+
+        void vv1()
+        {
+
+        }
 
         [Header("States")]
         public bool _isActivated = true;     // 활성화 플래그
@@ -104,22 +111,44 @@ namespace Rito
             // 1. Movement
             _moveDir = new Vector3(0, 0, 0);
 
-            if (Input.GetKey(_moveForward)) _moveDir.z += 1f;
-            if (Input.GetKey(_moveBackward)) _moveDir.z -= 1f;
-            if (Input.GetKey(_moveRight)) _moveDir.x += 1f;
-            if (Input.GetKey(_moveLeft)) _moveDir.x -= 1f;
-            if (Input.GetKey(_moveUp)) _moveDir.y += 1f;
-            if (Input.GetKey(_moveDown)) _moveDir.y -= 1f;
+            //public KeyCode _moveForward = KeyCode.W;
+            //public KeyCode _moveBackward = KeyCode.S;
+            //public KeyCode _moveLeft = KeyCode.A;
+            //public KeyCode _moveRight = KeyCode.D;
+            //public KeyCode _moveUp = KeyCode.E;
+            //public KeyCode _moveDown = KeyCode.Q;
 
-            if (Input.GetKey(_run))
-            {
-                _moveDir *= 2f;
-            }
+            //[Space]
+            //public KeyCode _run = KeyCode.LeftShift;
+            //public KeyCode _cursorLock = KeyCode.LeftAlt;
+
+            if (Keyboard.current.wKey.isPressed) _moveDir.z += 1f;
+            if (Keyboard.current.sKey.isPressed) _moveDir.z -= 1f;
+            if (Keyboard.current.dKey.isPressed) _moveDir.x += 1f;
+            if (Keyboard.current.aKey.isPressed) _moveDir.x -= 1f;
+            if (Keyboard.current.eKey.isPressed) _moveDir.y += 1f;
+            if (Keyboard.current.qKey.isPressed) _moveDir.y -= 1f;
+
+            if (Keyboard.current.leftShiftKey.wasPressedThisFrame) _moveDir *= 2f;
+
+            //if (Input.GetKey(_moveForward)) _moveDir.z += 1f;
+            //if (Input.GetKey(_moveBackward)) _moveDir.z -= 1f;
+            //if (Input.GetKey(_moveRight)) _moveDir.x += 1f;
+            //if (Input.GetKey(_moveLeft)) _moveDir.x -= 1f;
+            //if (Input.GetKey(_moveUp)) _moveDir.y += 1f;
+            //if (Input.GetKey(_moveDown)) _moveDir.y -= 1f;
+
+            //if (Input.GetKey(_run))
+            //{
+            //    _moveDir *= 2f;
+            //}
 
             // 가속/감속
             if (_wheelAcceleration)
             {
-                float wheel = Input.GetAxisRaw("Mouse ScrollWheel");
+                //float wheel = Input.GetAxisRaw("Mouse ScrollWheel");
+                float wheel = Mouse.current.scroll.ReadValue().y;
+
                 if (wheel != 0)
                 {
                     _moveSpeed += wheel * 10f;
@@ -129,15 +158,26 @@ namespace Rito
             }
 
             // 2. Rotation
-            float mX = Input.GetAxisRaw("Mouse X");
-            float mY = -Input.GetAxisRaw("Mouse Y");
+
+            
+            
+
+            //float mX = Input.GetAxisRaw("Mouse X");
+            //float mY = -Input.GetAxisRaw("Mouse Y");
+
+            float inputManagerSensitivity = 0.05f;
+            Vector2 delta = Mouse.current.delta.ReadValue(); // 픽셀 단위
+            float mX = delta.x * inputManagerSensitivity;
+            float mY = -delta.y * inputManagerSensitivity;
 
             _rotation = new Vector2(mY, mX);
+
         }
 
         private void CursorLock()
         {
-            if (Input.GetKeyDown(_cursorLock))
+            //if (Input.GetKeyDown(_cursorLock))
+            if (Keyboard.current.leftAltKey.wasPressedThisFrame)
             {
                 _isCursorVisible = !_isCursorVisible;
 

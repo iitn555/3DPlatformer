@@ -31,7 +31,7 @@ public class CameraManager
 
         Main_Camera = Camera.main;
 
-        Debug.Log("Camera Init!");
+        Debug.Log("CameraManager Init!");
 
     }
     public bool bNowRotateStateIsIdle()
@@ -89,6 +89,7 @@ public class CameraManager
                 else
                     Now_State = Define.Camera_State.R_270;
 
+                Debug.Log(Now_State);
             }
         }
 
@@ -108,54 +109,34 @@ public class CameraManager
                 else
                     Now_State = Define.Camera_State.R_0;
 
+                Debug.Log(Now_State);
             }
         }
 
-        //ChasePlayer();
-
-        RotateCamera();
+        ChasePlayer();
 
     }
 
-    //void ChasePlayer()
-    //{
-    //    Vector3 NowPosition = MainCamera.transform.position;
-    //    NowPosition.x = PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.x;
-    //    NowPosition.y = PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.y;
-    //    MainCamera.transform.position = NowPosition;
-    //}
+    void ChasePlayer()
+    {
+       
+        var x = Mathf.Sin(fAngle * Mathf.Deg2Rad) * CenterDistance + Managers.Pool_Instance.Dictionary_AllGameObject["Player"][0].transform.position.x;
+        var y = Managers.Pool_Instance.Dictionary_AllGameObject["Player"][0].transform.position.y;
+        var z = Mathf.Cos(fAngle * Mathf.Deg2Rad) * CenterDistance + Managers.Pool_Instance.Dictionary_AllGameObject["Player"][0].transform.position.z;
 
-    void RotateCamera()
+        Tempvec3.Set(x, y, z);
+
+        Main_Camera.transform.position = Tempvec3;
+
+        Tempvec3.Set(0, fAngle - 180, 0);
+        Main_Camera.transform.localRotation = Quaternion.Euler(Tempvec3);
+        Managers.Pool_Instance.Dictionary_AllGameObject["Player"][0].transform.localEulerAngles = Tempvec3; // 플레이어 빌보드
+    }
+
+    void GetCameraState()
     {
 
-        //Vector3 axis = new Vector3(0f, 1f, 0f);
-        //MainCamera.transform.RotateAround(PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos, axis, 1);
-
-        //var nowpos = this.TestObj.transform.position;
-        //nowpos.x = Mathf.Sin(this.TestObj.transform.eulerAngles.y * Mathf.Deg2Rad) + this.TestObj.transform.position.x;
-        //nowpos.y = Mathf.Cos(this.TestObj.transform.eulerAngles.y * Mathf.Deg2Rad) + this.TestObj.transform.position.y;
-
-
-        //var x = Mathf.Cos(fAngle * Mathf.Deg2Rad) * CenterDistance + PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.x;
-        //var z = Mathf.Sin(fAngle * Mathf.Deg2Rad) * CenterDistance + PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.z;
-
-
-        //수정중
-        //var x = Mathf.Sin(fAngle * Mathf.Deg2Rad) * CenterDistance + PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.x;
-        //var y = PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.y;
-        //var z = Mathf.Cos(fAngle * Mathf.Deg2Rad) * CenterDistance + PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_vPos.z;
-
-        //Tempvec3.Set(x, y, z);
-
-        //MainCamera.transform.position = Tempvec3;
-
-        //Tempvec3.Set(0, fAngle - 180, 0);
-        //MainCamera.transform.localRotation = Quaternion.Euler(Tempvec3);
-        //PlatformerGameManager.GetInstance().Dictionary_AllCGameObject["Player"][0].m_GameObject.transform.localEulerAngles = Tempvec3; // 플레이어 빌보드
-
     }
-
-
 
     //LookAtSlowly()
     //{

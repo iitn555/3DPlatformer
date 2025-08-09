@@ -61,10 +61,15 @@ public class PlayerController : Unit
     // Update is called once per frame
     void Update()
     {
+        if (!Managers.Camera_Instance.bNowRotateStateIsIdle())
+            return;
+
+        
+
         MyPos = transform.position;
 
         PlayerMoveControll();
-        PlayerJumpControll();
+        //PlayerJumpControll();
 
         if (MyPos.y < -5)
         {
@@ -93,18 +98,20 @@ public class PlayerController : Unit
 
     }
 
-
-    void Jump()
-    {
-        if (m_fVerticalSpeed == 0)
-        {
-            m_fVerticalSpeed = m_fJumpingPower;
-            SetMyState(Player_State.Jumping);
-        }
-    }
-
     void PlayerJumpControll()
     {
+
+        if (Keyboard.current.cKey.isPressed)
+        {
+            if (!GetMyState(Player_State.Falling))
+            {
+                if (m_fVerticalSpeed == 0) // Jump()
+                {
+                    m_fVerticalSpeed = m_fJumpingPower;
+                    SetMyState(Player_State.Jumping);
+                }
+            }
+        }
 
         // 중력 적용
         if (GetMyState(Player_State.Jumping))
@@ -134,15 +141,15 @@ public class PlayerController : Unit
     {
         Define.Camera_State NowCameraState = Managers.Camera_Instance.Get_Camera_State;
 
-        //if (Keyboard.current.upArrowKey.wasPressedThisFrame)
-        //{
-        //    MyPos.y += Time.deltaTime * fMaxSpeed;
-        //}
+        if (Keyboard.current.upArrowKey.isPressed)
+        {
+            MyPos.y += Time.deltaTime * fMaxSpeed;
+        }
 
-        //if (Keyboard.current.downArrowKey.wasPressedThisFrame)
-        //{
-        //    MyPos.y -= Time.deltaTime * fMaxSpeed;
-        //}
+        if (Keyboard.current.downArrowKey.isPressed)
+        {
+            MyPos.y -= Time.deltaTime * fMaxSpeed;
+        }
 
 
 
@@ -206,11 +213,7 @@ public class PlayerController : Unit
                 fRightSpeed = fMinSpeed;
         }
 
-        if (Keyboard.current.cKey.isPressed)
-        {
-            if (!GetMyState(Player_State.Falling))
-                Jump();
-        }
+        
 
         if (Keyboard.current.pKey.isPressed)
         {
@@ -228,9 +231,6 @@ public class PlayerController : Unit
     void PlayerCollisionCheck()
     {
 
-
-
-
         CollisionDirection finalDir = CollisionDirection.None;
         GameObject finalBlock = null;
 
@@ -238,8 +238,10 @@ public class PlayerController : Unit
         {
             foreach (var box in Managers.Pool_Instance.Dictionary_AllGameObject["Block"])
             {
-                if (!box.gameObject.activeSelf)
+                if (!box.gameObject.activeSelf) //비활성화시 충돌패스
                     continue;
+
+              
 
                 var dir = GetCollisionDirection(gameObject, box.gameObject);
                 if (dir == CollisionDirection.Top)
@@ -310,7 +312,7 @@ public class PlayerController : Unit
         var blockRect = CollisionChecker.Update_GameObject(block);
 
         // AABB 충돌 체크
-        bool isColliding = CollisionChecker.bRectCollsionCheck(player, block); // 충돌체크
+        bool isColliding = CollisionChecker.IsRectCollsionAndPush(player, block); // 충돌체크
 
         if (!isColliding)
             return CollisionDirection.None;
@@ -321,7 +323,11 @@ public class PlayerController : Unit
         float fromRight = Mathf.Abs(playerRect.left - blockRect.right);
         float minDist = Mathf.Min(fromTop, fromBottom, fromLeft, fromRight);
 
-        CollisionChecker.PushDestObjPosition(player, block); // 밀기
+        //var now_camera_state = Managers.Camera_Instance.Get_Camera_State;
+        //if (now_camera_state == Define.Camera_State.R_0 || now_camera_state == Define.Camera_State.R_180) // X
+        //    CollisionChecker.PushDestObjPositionX(player, block); // 밀기
+        //else if (now_camera_state == Define.Camera_State.R_90 || now_camera_state == Define.Camera_State.R_270) // Z
+        //    CollisionChecker.PushDestObjPositionZ(player, block); // 밀기
 
         if (minDist == fromTop && m_fVerticalSpeed <= 0 && player.transform.position.y >= block.transform.position.y)
             return CollisionDirection.Top; // 위에서 착지

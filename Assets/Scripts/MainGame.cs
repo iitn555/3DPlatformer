@@ -7,7 +7,12 @@ public class MainGame : MonoBehaviour
 {
     private void Awake()
     {
+        CubeBoxTransform = transform.Find("Blocks").transform;
+        SampleCubeObject = CubeBoxTransform.GetChild(0).gameObject;
         LoadPositions();
+        //int a = 0; MakeCube(ref a);
+
+
     }
 
     void Start()
@@ -33,8 +38,7 @@ public class MainGame : MonoBehaviour
 
     public void LoadPositions() // ·Îµå
     {
-        CubeBoxTransform = transform.Find("Blocks").transform;
-        SampleCubeObject = CubeBoxTransform.GetChild(0).gameObject;
+        
 
         savePath = Path.Combine(folderPath, fileName);
 

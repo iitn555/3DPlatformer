@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MaptoolManager : MonoBehaviour
 {
     private CooldownManager CDManager = new CooldownManager();
 
-    public GameObject SampleCubeObject;
+    private GameObject SampleCubeObject;
 
     //public Transform CubeBox;
 
@@ -38,8 +39,12 @@ public class MaptoolManager : MonoBehaviour
     {
         savePath = Path.Combine(folderPath, fileName);
 
+        SampleCubeObject = transform.Find("Cube").gameObject;
+
         MakeCube();
         CDManager.RegisterSkill("CreateCube", 0.1f);
+
+
     }
 
     private void Start()
@@ -59,7 +64,10 @@ public class MaptoolManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        //Keyboard.current.Key.isPressed
+            
+
+        if (Mouse.current.leftButton.isPressed)
         {
             //if (Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) // UI를 클릭했을때 방지하는
             //    return;
@@ -69,7 +77,7 @@ public class MaptoolManager : MonoBehaviour
 
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             DeleteCube();
 
@@ -88,7 +96,7 @@ public class MaptoolManager : MonoBehaviour
         }
 
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
 
         RaycastHit hit;
@@ -118,7 +126,7 @@ public class MaptoolManager : MonoBehaviour
 
         Vector3 pos = Vector3.zero;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
 
         RaycastHit hit;

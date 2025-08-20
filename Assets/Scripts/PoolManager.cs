@@ -6,18 +6,18 @@ public class PoolManager
 {
     public Dictionary<string, List<Unit>> Dictionary_AllGameObject = new Dictionary<string, List<Unit>>();
 
-    Transform _root;
 
     Transform MainGame_tf;
 
+
     public void Init()
     {
+        GameObject _root = GameObject.Find("@Pool_Root");
+
         if (_root == null) //최초 한번만 실행
         {
-            _root = new GameObject { name = "@Pool_Root" }.transform;
+            _root = new GameObject { name = "@Pool_Root" };
             _root.transform.SetParent(GameObject.Find("@Managers").transform);
-
-
 
             Setting();
             Debug.Log("PoolManager Init!");

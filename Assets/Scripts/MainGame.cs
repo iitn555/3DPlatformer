@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.InputSystem;
 
 public class MainGame : MonoBehaviour
 {
@@ -12,12 +13,12 @@ public class MainGame : MonoBehaviour
         LoadPositions();
         //int a = 0; MakeCube(ref a);
 
+        //Managers.Sound_Instance.Play("Bgm_Stage1", Define.Sound.Bgm);
 
     }
 
     void Start()
     {
-        
     }
 
     void Update()
@@ -38,8 +39,6 @@ public class MainGame : MonoBehaviour
 
     public void LoadPositions() // ·Îµå
     {
-        
-
         savePath = Path.Combine(folderPath, fileName);
 
         if (!File.Exists(savePath))

@@ -69,7 +69,7 @@ public class PlayerController : Unit
         MyPos = transform.position;
 
         PlayerMoveControll();
-        //PlayerJumpControll();
+        PlayerJumpControll();
 
         if (MyPos.y < -5)
         {
@@ -109,6 +109,10 @@ public class PlayerController : Unit
                 {
                     m_fVerticalSpeed = m_fJumpingPower;
                     SetMyState(Player_State.Jumping);
+
+                    Managers.Sound_Instance.Play("Jump");
+
+                    //Managers.Sound_Instance.PlaySFX("Jump.wav");
                 }
             }
         }

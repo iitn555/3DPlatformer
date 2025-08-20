@@ -19,13 +19,16 @@ public class CameraManager
     public float fAngle = 180;
     private float fSpeed = 90;
 
-    Transform _root;
-    
+    //private Transform _root = null;
+
     public void Init()
     {
+
+        GameObject _root = GameObject.Find("@Camera_Root");
+
         if (_root == null)
         {
-            _root = new GameObject { name = "@Camera_Root" }.transform;
+            _root = new GameObject { name = "@Camera_Root" };
             _root.transform.SetParent(GameObject.Find("@Managers").transform);
         }
 

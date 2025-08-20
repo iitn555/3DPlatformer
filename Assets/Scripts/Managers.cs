@@ -7,25 +7,15 @@ public class Managers : MonoBehaviour
     static Managers s_instance;
     static Managers Instance { get { Init(); return s_instance; } }
 
+    ResourceManager _resource = new ResourceManager();
     CameraManager _camera = new CameraManager();
-    public static CameraManager Camera_Instance { get { return Instance._camera; } }
-
     PoolManager _pool = new PoolManager();
-    //InputManager _input = new InputManager();
-    //ResourceManager _resource = new ResourceManager();
+    SoundManager _sound = new SoundManager();
 
-    public static PoolManager Pool_Instance { get { return Instance._pool; } }
-    //public static InputManager Input_Instance { get { return Instance._input; } }
     //public static ResourceManager Resource_Instance { get { return Instance._resource; } }
-
-
-    void Start()
-    {
-
-
-    }
-
-
+    public static CameraManager Camera_Instance { get { return Instance._camera; } }
+    public static SoundManager Sound_Instance { get { return Instance._sound; } }
+    public static PoolManager Pool_Instance { get { return Instance._pool; } }
     static void Init()
     {
         if (s_instance == null)
@@ -43,7 +33,7 @@ public class Managers : MonoBehaviour
 
             s_instance._camera.Init();
             s_instance._pool.Init();
-
+            s_instance._sound.Init();
 
         }
     }
